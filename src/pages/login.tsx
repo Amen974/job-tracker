@@ -41,6 +41,12 @@ const Login = () => {
             <p className="text-slate-400 text-sm">Streamline your search and land your dream role.</p>
           </div>
 
+          {errorMsg &&(
+            <div className="bg-[#4c0519] rounded-xl p-3 border border-[#881337] flex gap-1 justify-center">
+            <img src="error.svg" alt="error" /><p className="text-[#fb7185]">{errorMsg}</p>
+          </div>
+          )}
+
           <div className="border border-b border-gray-700 rounded-xl flex w-full sm:w-150 h-11">
             <button onClick={() => setIsLogin(true)} className={`cursor-pointer flex-1 font-semibold text-gray-400  rounded-xl hover:opacity-90 ${isLogin && 'text-black! bg-green'}`}>Login</button>
             <button onClick={() => setIsLogin(false)} className={`cursor-pointer flex-1 font-semibold text-gray-400 rounded-xl hover:opacity-90 ${!isLogin && 'text-black! bg-green'}`}>Register</button>
@@ -50,7 +56,7 @@ const Login = () => {
 
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="ml-1">Email Address</label>
-              <div className="flex items-center border border-gray-700 rounded-xl w-full h-11 p-3 gap-2">
+              <div className={`flex items-center border  rounded-xl w-full h-11 p-3 gap-2 ${errorMsg ? ' border-[#fb7185]' : 'border-gray-700'}`}>
                 <img src="mail.svg" alt="mail" height={20} width={20} />
                 <input
                   value={email}
@@ -66,7 +72,7 @@ const Login = () => {
 
             <div className="flex flex-col gap-2 mb-3">
               <label htmlFor="password" className="ml-1">Password</label>
-              <div className="flex items-center border border-gray-700 rounded-xl w-full h-11 p-3 gap-2">
+              <div className={`flex items-center border  rounded-xl w-full h-11 p-3 gap-2 ${errorMsg ? ' border-[#fb7185]' : 'border-gray-700'}`}>
                 <img src="lock.svg" alt="lock" height={20} width={20} />
                 <input
                   value={password}
