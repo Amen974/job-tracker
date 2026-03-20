@@ -9,7 +9,7 @@ input:-webkit-autofill:focus {
 }
 
 .bg-main{
-  background-color: #11211e;
+  background-color: #00201a;
 }
 
 .bg-green{
@@ -18,4 +18,14 @@ input:-webkit-autofill:focus {
 
 .shadow-costom{
   background-image: radial-gradient(circle at 50% 50%, #20dfbf 0%, transparent 70%)
+}
+
+.conic-gradient{
+  background-image: 
+  conic-gradient(
+    #20dfbf 0% 40%,
+    #7dd3fc 40% 70%,
+    #ffffff 70% 80%,
+    #fb7185 80% 100%
+  );
 }
