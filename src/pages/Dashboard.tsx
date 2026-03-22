@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 
 const Dashboard = () => {
-  const { applications, loading } = useApplications()
-  const { interviews, loadingg } = useInterviews()
+  const { applications,} = useApplications()
+  const { interviews,} = useInterviews()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   const navigate = useNavigate();
