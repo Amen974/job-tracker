@@ -3,20 +3,23 @@ import { useApplications } from "../hooks/useApplications"
 import { useInterviews } from "../hooks/useInterviews"
 import { supabase } from "../lib/supabase"
 import { useNavigate } from "react-router-dom";
+import NewAplication from "../components/NewAplication";
+
 
 
 const Dashboard = () => {
-  const { applications,} = useApplications()
-  const { interviews,} = useInterviews()
+  const { applications, } = useApplications()
+  const { interviews, } = useInterviews()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [showNewAplication, SetShowNewAplication] = useState<boolean>(false)
+  const [dateShow, SetDateShow] = useState('This Month')
 
   const navigate = useNavigate();
 
   const today = new Date()
-  const thirtyDaysAgo = new Date(today)
-  thirtyDaysAgo.setDate(today.getDate() - 30)
-  const sixtyDaysAgo = new Date(today)
-  sixtyDaysAgo.setDate(today.getDate() - 60)
+
+  const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+  const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
 
   const inRange = (date: string, from: Date, to?: Date) => {
     const d = new Date(date)
@@ -26,10 +29,12 @@ const Dashboard = () => {
   const getStats = (status?: string) => {
     const filtered = status ? applications.filter(a => a.status === status) : applications
     return {
-      thisMonth: filtered.filter(a => inRange(a.date_applied, thirtyDaysAgo)),
-      lastMonth: filtered.filter(a => inRange(a.date_applied, sixtyDaysAgo, thirtyDaysAgo)),
+      thisMonth: filtered.filter(a => inRange(a.date_applied, startOfThisMonth)),
+      lastMonth: filtered.filter(a => inRange(a.date_applied, startOfLastMonth, startOfThisMonth)),
     }
   }
+
+
 
   const calculatePercentageChange = (thisMonth: any[], lastMonth: any[]): number => {
     if (thisMonth.length === 0 && lastMonth.length === 0) return 0
@@ -57,13 +62,30 @@ const Dashboard = () => {
   const int = getStats('Interview')
   const of = getStats('Offer')
   const re = getStats('Rejected')
-  const aplyed = getStats('Applied')
 
-  const total = ap.thisMonth.length
-  const appliedPct = total === 0 ? 0 : Math.round((ap.thisMonth.filter(a => a.status === 'Applied').length / total) * 100)
-  const interviewPct = total === 0 ? 0 : Math.round((int.thisMonth.length / total) * 100)
-  const offerPct = total === 0 ? 0 : Math.round((of.thisMonth.length / total) * 100)
+  const getChartData = (status?: string) => {
+    const filtered = status ? applications.filter(a => a.status === status) : applications
+    if (dateShow === 'Last Month') return filtered.filter(a => inRange(a.date_applied, startOfLastMonth))
+    if (dateShow === 'All time') return filtered.filter(a => inRange(a.date_applied, new Date(0)))
+    return filtered.filter(a => inRange(a.date_applied, startOfThisMonth))
+  }
+
+  const chartAp = getChartData()
+  const chartAplyed = getChartData('Applied')
+  const chartInt = getChartData('Interview')
+  const chartOf = getChartData('Offer')
+  const chartRe = getChartData('Rejected')
+
+  const total = chartAp.length
+  const appliedPct = total === 0 ? 0 : Math.round((chartAplyed.length / total) * 100)
+  const interviewPct = total === 0 ? 0 : Math.round((chartInt.length / total) * 100)
+  const offerPct = total === 0 ? 0 : Math.round((chartOf.length / total) * 100)
   const rejectedPct = 100 - appliedPct - interviewPct - offerPct
+
+  const upcoming = interviews.filter(i => {
+    const interviewDateTime = new Date(`${i.interview_date}T${i.interview_time}`)
+    return interviewDateTime > today
+  })
 
   const conicGradient = `conic-gradient(
     #20dfbf 0% ${appliedPct}%,
@@ -75,13 +97,17 @@ const Dashboard = () => {
   return (
     <main className="bg-main overflow-hidden text-white relative">
 
+      {showNewAplication && (
+        <NewAplication onClose={() => SetShowNewAplication(false)} />
+      )}
+
       <nav className="flex items-center h-20 sm:h-15 p-5 gap-2 border-b border-gray-700 relative">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mr-2 text-gray-400 cursor-pointer">
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mr-2 text-gray-400 cursor-pointer hidden md:block">
           <span className="material-symbols-outlined">
             {sidebarOpen ? 'menu_open' : 'menu'}
           </span>
         </button>
-        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><img src="layers.svg" alt="layers" height={20} width={20} /></div>
+        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><span className="material-symbols-outlined mt-1" style={{ fontSize: '20px', color: 'black' }}>layers</span></div>
         <h1 className="font-bold text-lg">JobTracker</h1>
         <div className="absolute right-5 flex gap-1 cursor-pointer uppercase">
           <button
@@ -115,7 +141,7 @@ const Dashboard = () => {
           <div className="flex flex-col gap-5">
 
             <div className="flex gap-1 items-center cursor-pointer">
-              <span className="material-symbols-outlined">dashboard_2</span>
+              <span className="material-symbols-outlined">dashboard</span>
               <p>Dashboard</p>
             </div>
 
@@ -146,8 +172,8 @@ const Dashboard = () => {
               <p className="text-gray-400 min-w-85">Real-time tracking of your career progress.</p>
             </div>
 
-            <div className="flex items-end text-black">
-              <button className="flex bg-green px-4 py-2 rounded-lg hover:brightness-110 font-bold text-sm"><span className="material-symbols-outlined">add</span> New Application</button>
+            <div onClick={() => SetShowNewAplication(true)} className="flex items-end text-black">
+              <button className="flex bg-green px-4 py-2 rounded-lg hover:brightness-110 font-bold text-sm items-center cursor-pointer"><span className="material-symbols-outlined" style={{ fontSize: '16px', marginTop: '3px' }}>add</span> New Application</button>
             </div>
           </div>
 
@@ -201,7 +227,7 @@ const Dashboard = () => {
                 <div className="p-2 bg-[#fb7185]/10 rounded-lg">
                   <span className="material-symbols-outlined text-[#fb7185]">cancel</span>
                 </div>
-                <span className="text-xs font-bold text-[#fb7185] px-2 py-1 bg-[#fb7185]/5 rounded-full border border-[#20dfbf]/20">{calculatePercentageChange(re.thisMonth, re.lastMonth)}%</span>
+                <span className="text-xs font-bold text-[#fb7185] px-2 py-1 bg-[#fb7185]/5 rounded-full border border-[#20dfbf]/20">{re.thisMonth.length}</span>
               </div>
               <div className="mt-4">
                 <p className="text-xs font-medium uppercase text-gray-400">Rejection Rate</p>
@@ -220,9 +246,9 @@ const Dashboard = () => {
                   <h2 className="text-lg font-bold text-white">Application Statuses</h2>
                   <p className="text-sm text-gray-400">Current pipeline distribution</p>
                 </div>
-                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5">
-                  <option>Last 30 Days</option>
-                  <option>Last 90 Days</option>
+                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5" value={dateShow} onChange={e => SetDateShow(e.target.value)}>
+                  <option>This Month</option>
+                  <option>Last Month</option>
                   <option>All time</option>
                 </select>
               </div>
@@ -230,7 +256,7 @@ const Dashboard = () => {
 
                 <div style={{ backgroundImage: conicGradient }} className="w-48 h-48 rounded-full flex justify-center items-center">
                   <div className="rounded-full bg-[#182d2a] w-35 h-35 flex flex-col justify-center items-center">
-                    <span className="text-3xl">{ap.thisMonth.length}</span>
+                    <span className="text-3xl">{chartAp.length}</span>
                     <span className="text-[10px] uppercase text-gray-400">Total</span>
                   </div>
                 </div>
@@ -240,28 +266,28 @@ const Dashboard = () => {
                     <div className="w-3 h-3 rounded-full bg-[#20dfbf]"></div>
                     <div>
                       <p className="text-xs text-gray-400">Applied</p>
-                      <p className="text-sm font-bold">{aplyed.thisMonth.length} ({appliedPct}%)</p>
+                      <p className="text-sm font-bold">{chartAplyed.length} ({appliedPct}%)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-[#7dd3fc]"></div>
                     <div>
                       <p className="text-xs text-gray-400">Interviewing</p>
-                      <p className="text-sm font-bold">{int.thisMonth.length} ({interviewPct}%)</p>
+                      <p className="text-sm font-bold">{chartInt.length} ({interviewPct}%)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-[#1ab59b]"></div>
                     <div>
                       <p className="text-xs text-gray-400">Offered</p>
-                      <p className="text-sm font-bold">{of.thisMonth.length} ({offerPct}%)</p>
+                      <p className="text-sm font-bold">{chartOf.length} ({offerPct}%)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-[#fb7185]"></div>
                     <div>
                       <p className="text-xs text-gray-400">Rejected</p>
-                      <p className="text-sm font-bold">{re.thisMonth.length} ({rejectedPct}%)</p>
+                      <p className="text-sm font-bold">{chartRe.length} ({rejectedPct}%)</p>
                     </div>
                   </div>
                 </div>
@@ -274,22 +300,25 @@ const Dashboard = () => {
                 <h2 className="text-lg font-bold">Upcoming</h2>
                 <span className="text-[10px] font-bold text-[#20dfbf] bg-[#20dfbf]/10 px-2 py-0.5 rounded uppercase">Next</span>
               </div >
-              {interviews && interviews.slice(0, 4).map((interview) => (
-                <div key={interview.id} className="flex border border-[#20dfbf1a] rounded-xl bg-main p-3">
-                  <div className="flex-1">
-                    <h1>{interview.applications.role}</h1>
-                    <p className="text-gray-400 text-sm">{interview.type} at {interview.applications.company}</p>
-                  </div>
+              <div className="flex flex-col gap-4">
+                {upcoming && upcoming.slice(0, 4).map((interview) => (
+                  <div key={interview.id} className="flex border border-[#20dfbf1a] rounded-xl bg-main p-3">
+                    <div className="flex-1">
+                      <h1>{interview.applications.role}</h1>
+                      <p className="text-gray-400 text-sm">{interview.type} at {interview.applications.company}</p>
+                    </div>
 
-                  <div>
-                    <p className="text-sm">{interview.interview_date}</p>
-                    <p className="text-center text-xs text-gray-400">{interview.interview_time}</p>
-                  </div>
+                    <div>
+                      <p className="text-sm">{interview.interview_date}</p>
+                      <p className="text-center text-xs text-gray-400">{interview.interview_time}</p>
+                    </div>
 
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
+
               <button className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-gray-700 rounded-lg hover:bg-[#223b37] hover:text-white uppercase cursor-pointer">
-                View Full Calendar (it's empty, I know)
+                View Full Calendar {upcoming.length === 0 && ('(its empty, I know)')}
               </button>
             </div>
 

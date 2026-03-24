@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
     isSession()
-  }, []);
+  }, [navigate]);
 
   if (loading) return (
     <main className="h-screen w-full flex flex-col items-center justify-center bg-main text-white gap-8 p-5 relative">

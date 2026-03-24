@@ -3,16 +3,24 @@ import { supabase } from "../lib/supabase";
 
 export function useApplications() {
   const [applications, setApplications] = useState<any[]>([]);
-  const [loading, setLoading ] = useState<boolean>(true);
-  useEffect(()=>{
-    const getDatat = async () => {
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetch = async () => {
       setLoading(true);
-      const {data} = await supabase.from('applications').select('*');
+      const { data } = await supabase.from('applications').select('*');
       setApplications(data ?? []);
       setLoading(false);
     }
-    getDatat()
-  },[]);
+    fetch()
 
-  return {applications, loading}
+    const subscription = supabase
+      .channel('applications')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'applications' }, fetch)
+      .subscribe()
+
+    return () => { supabase.removeChannel(subscription) }
+  }, []);
+
+  return { applications, loading }
 }

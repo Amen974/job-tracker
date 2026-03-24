@@ -6,7 +6,7 @@ export function useInterviews() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getInterviews = async () => {
+    const fetch  = async () => {
       setLoading(true);
       const { data } = await supabase
         .from('interviews')
@@ -21,7 +21,14 @@ export function useInterviews() {
       setInterviews(data ?? []);
       setLoading(false);
     }
-    getInterviews();
+    fetch();
+
+    const subscription = supabase
+    .channel('interviews')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'interviews' }, fetch)
+    .subscribe()
+
+    return () => { supabase.removeChannel(subscription) }
   }, []);
 
   return { interviews, loading }
