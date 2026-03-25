@@ -4,12 +4,14 @@ import { useInterviews } from "../hooks/useInterviews"
 import { supabase } from "../lib/supabase"
 import { useNavigate } from "react-router-dom";
 import NewAplication from "../components/NewAplication";
+import type { Applications, GetStats } from "../types";
+import DashboardSkeleton from "../components/DashboardSkeleton";
 
 
 
 const Dashboard = () => {
-  const { applications, } = useApplications()
-  const { interviews, } = useInterviews()
+  const { applications, loading: apLoading} = useApplications()
+  const { interviews, loading: intLoading} = useInterviews()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [showNewAplication, SetShowNewAplication] = useState<boolean>(false)
   const [dateShow, SetDateShow] = useState('This Month')
@@ -34,22 +36,20 @@ const Dashboard = () => {
     }
   }
 
-
-
-  const calculatePercentageChange = (thisMonth: any[], lastMonth: any[]): number => {
+  const calculatePercentageChange = (thisMonth: Applications[], lastMonth: Applications[]): number => {
     if (thisMonth.length === 0 && lastMonth.length === 0) return 0
     if (lastMonth.length === 0) return 100
     if (thisMonth.length === 0) return 0
     return Math.round(((thisMonth.length - lastMonth.length) / lastMonth.length) * 100)
   }
 
-  const calculateInt = (thisMonth: any[], lastMonth: any[]): string => {
+  const calculateInt = (thisMonth: Applications[], lastMonth: Applications[]): string => {
     const diff = thisMonth.length - lastMonth.length
     if (diff <= 0) return 'no new ones 😬'
     return `+${diff} new 🎉`
   }
 
-  const calculateRe = (ap: any, re: any): string => {
+  const calculateRe = (ap: GetStats, re: GetStats): string => {
     if (ap.thisMonth.length === 0) return 'apply to something first 💀'
     const re1 = (re.thisMonth.length / ap.thisMonth.length) * 100
     const re2 = ap.lastMonth.length === 0 ? 0 : (re.lastMonth.length / ap.lastMonth.length) * 100
@@ -95,7 +95,9 @@ const Dashboard = () => {
   )`
 
   return (
-    <main className="bg-main overflow-hidden text-white relative">
+    <>
+    {apLoading || intLoading ? (<DashboardSkeleton/>) : (
+      <main className="bg-main text-white relative">
 
       {showNewAplication && (
         <NewAplication onClose={() => SetShowNewAplication(false)} />
@@ -240,13 +242,13 @@ const Dashboard = () => {
 
           <div className="flex flex-wrap w-full gap-5 via-gray-50 min-h-200 sm:min-h-120">
 
-            <div className="flex-3 min-w-90 bg-[#182d2a] p-6 border border-[#20dfbf1a] rounded-xl">
+            <div className="flex-3 min-w-85 bg-[#182d2a] p-6 border border-[#20dfbf1a] rounded-xl ">
               <div className="flex justify-between items-center mb-8">
                 <div>
                   <h2 className="text-lg font-bold text-white">Application Statuses</h2>
                   <p className="text-sm text-gray-400">Current pipeline distribution</p>
                 </div>
-                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5" value={dateShow} onChange={e => SetDateShow(e.target.value)}>
+                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5 " value={dateShow} onChange={e => SetDateShow(e.target.value)}>
                   <option>This Month</option>
                   <option>Last Month</option>
                   <option>All time</option>
@@ -353,6 +355,9 @@ const Dashboard = () => {
       </nav>
 
     </main>
+    )}
+    
+    </>
   )
 }
 

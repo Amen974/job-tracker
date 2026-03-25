@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
 
-const NewAplication = ({ onClose }: { onClose: () => void }) => {
+const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
   const today = new Date().toISOString().split('T')[0]
 
   const [company, setCompany] = useState('')
@@ -10,6 +10,7 @@ const NewAplication = ({ onClose }: { onClose: () => void }) => {
   const [dateApplied, setDateApplied] = useState(today)
   const [jobUrl, setJobUrl] = useState('')
   const [notes, setNotes] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const now = new Date().toTimeString().slice(0, 5)
 
@@ -19,27 +20,32 @@ const NewAplication = ({ onClose }: { onClose: () => void }) => {
   const [interviewNotes, setInterviewNotes] = useState('')
 
   const handleSubmit = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-
-    const { data: app } = await supabase.from('applications').insert({
-      user_id: user?.id,
-      company, role, status,
-      date_applied: dateApplied,
-      job_url: jobUrl,
-      notes
-    }).select().single()
-
-    if (status === 'Interview' && app) {
-      await supabase.from('interviews').insert({
+    setIsSubmitting(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: app } = await supabase.from('applications').insert({
         user_id: user?.id,
-        application_id: app.id,
-        interview_date: interviewDate,
-        interview_time: interviewTime,
-        type: interviewType,
-        notes: interviewNotes
-      })
-    }
+        company, role, status,
+        date_applied: dateApplied,
+        job_url: jobUrl,
+        notes
+      }).select().single()
 
+      if (status === 'Interview' && app) {
+        await supabase.from('interviews').insert({
+          user_id: user?.id,
+          application_id: app.id,
+          interview_date: interviewDate,
+          interview_time: interviewTime,
+          type: interviewType,
+          notes: interviewNotes
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false)
+    }
     onClose()
   }
 
@@ -79,7 +85,6 @@ const NewAplication = ({ onClose }: { onClose: () => void }) => {
             <div className="flex flex-col flex-1 gap-1">
               <label className="text-gray-400 text-xs uppercase">Status</label>
               <select
-                defaultValue="Applied"
                 value={status}
                 onChange={e => setStatus(e.target.value)}
                 className="bg-main flex-1 rounded-sm px-2 py-2 border border-[#20dfbf1a] text-sm outline-none focus:border-[#20dfbf]"
@@ -179,7 +184,7 @@ const NewAplication = ({ onClose }: { onClose: () => void }) => {
 
         <div className="h-20 sm:h-15 w-full border-t border-gray-700 flex items-center justify-end pr-4 sm:pr-7 gap-5 sm:gap-7">
           <button onClick={onClose} className="text-gray-400 text-sm cursor-pointer">Cancel</button>
-          <button onClick={handleSubmit} className="flex bg-green px-6 py-3 sm:py-2 rounded-lg hover:brightness-110 font-semibold text-sm items-center cursor-pointer text-black">Add Application</button>
+          <button onClick={handleSubmit} disabled={isSubmitting} className="flex bg-green px-6 py-3 sm:py-2 rounded-lg hover:brightness-110 font-semibold text-sm items-center cursor-pointer text-black disabled:opacity-70 gap-1">Add Application {isSubmitting && (<div className="border-4 border-white border-t-[#20dfbf] rounded-full h-4 w-4 animate-spin"></div>)}</button>
         </div>
 
       </div>

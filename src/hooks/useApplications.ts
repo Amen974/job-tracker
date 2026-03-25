@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import type { Applications } from "../types";
 
 export function useApplications() {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<Applications[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
