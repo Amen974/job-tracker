@@ -97,7 +97,7 @@ const Dashboard = () => {
   return (
     <>
     {apLoading || intLoading ? (<DashboardSkeleton/>) : (
-      <main className="bg-main text-white relative">
+      <main className="bg-main min-h-screen text-white relative overflow-hidden">
 
       {showNewAplication && (
         <NewAplication onClose={() => SetShowNewAplication(false)} />
@@ -179,7 +179,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
 
             <div className="bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
               <div className="flex justify-between items-start">
@@ -242,7 +242,7 @@ const Dashboard = () => {
 
           <div className="flex flex-wrap w-full gap-5 via-gray-50 min-h-200 sm:min-h-120">
 
-            <div className="flex-3 min-w-85 bg-[#182d2a] p-6 border border-[#20dfbf1a] rounded-xl ">
+            <div className="flex-3 w-full bg-[#182d2a] p-6 border border-[#20dfbf1a] rounded-xl ">
               <div className="flex justify-between items-center mb-8">
                 <div>
                   <h2 className="text-lg font-bold text-white">Application Statuses</h2>
