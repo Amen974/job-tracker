@@ -1,25 +1,26 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
+import type { Status, Type } from "../types"
 
 const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
   const today = new Date().toISOString().split('T')[0]
 
-  const [company, setCompany] = useState('')
-  const [role, setRole] = useState('')
-  const [status, setStatus] = useState('Applied')
-  const [dateApplied, setDateApplied] = useState(today)
-  const [jobUrl, setJobUrl] = useState('')
-  const [notes, setNotes] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [company, setCompany] = useState<string>('')
+  const [role, setRole] = useState<string>('')
+  const [status, setStatus] = useState<Status>('Applied')
+  const [dateApplied, setDateApplied] = useState<string>(today)
+  const [jobUrl, setJobUrl] = useState<string>('')
+  const [notes, setNotes] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const now = new Date().toTimeString().slice(0, 5)
 
-  const [interviewDate, setInterviewDate] = useState(today)
-  const [interviewTime, setInterviewTime] = useState(now)
-  const [interviewType, setInterviewType] = useState('Phone')
-  const [interviewNotes, setInterviewNotes] = useState('')
+  const [interviewDate, setInterviewDate] = useState<string>(today)
+  const [interviewTime, setInterviewTime] = useState<string>(now)
+  const [interviewType, setInterviewType] = useState<Type>('Phone')
+  const [interviewNotes, setInterviewNotes] = useState<string>('')
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     setIsSubmitting(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -86,7 +87,7 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
               <label className="text-gray-400 text-xs uppercase">Status</label>
               <select
                 value={status}
-                onChange={e => setStatus(e.target.value)}
+                onChange={e => setStatus(e.target.value as Status)}
                 className="bg-main flex-1 rounded-sm px-2 py-2 border border-[#20dfbf1a] text-sm outline-none focus:border-[#20dfbf]"
               >
                 <option>Applied</option>
@@ -156,7 +157,7 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
                     <label className="text-gray-400 text-xs uppercase">type</label>
                     <select
                       value={interviewType}
-                      onChange={e => setInterviewType(e.target.value)}
+                      onChange={e => setInterviewType(e.target.value as Type)}
                       className="bg-main rounded-sm px-2 py-2 border border-[#20dfbf1a] text-sm outline-none focus:border-[#20dfbf]"
                     >
                       <option>Phone</option>

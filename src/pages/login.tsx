@@ -11,7 +11,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handelSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handelSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (isLogin) {
       const {error} = await supabase.auth.signInWithPassword({ email: email, password: password });
@@ -23,7 +23,6 @@ const Login = () => {
       if(error) setErrorMsg(error.message)
     }
   }
-  console.log(errorMsg);
   return (
     <main className="h-screen w-full flex flex-col bg-main text-white overflow-hidden">
 
@@ -103,7 +102,7 @@ const Login = () => {
       </div>
 
       <div className="border-t border-gray-700 flex justify-center items-center flex-1">
-        <p className="text-sm text-gray-400">© 2026 JobTracker — Built by someone desperately seeking employment.</p>
+        <p className="text-sm text-gray-400 text-center">© 2026 JobTracker — Built by someone desperately seeking employment.</p>
       </div>
     </main>
   )

@@ -30,3 +30,5 @@ export type GetStats = {
   thisMonth: Applications[]
   lastMonth: Applications[]
 }
+
+export type ChartDate = 'This Month' | 'Last Month' | 'All time'

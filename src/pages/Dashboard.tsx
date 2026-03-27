@@ -1,10 +1,8 @@
 import { useState } from "react"
 import { useApplications } from "../hooks/useApplications"
 import { useInterviews } from "../hooks/useInterviews"
-import { supabase } from "../lib/supabase"
-import { useNavigate } from "react-router-dom";
 import NewAplication from "../components/NewAplication";
-import type { Applications, GetStats } from "../types";
+import type { Applications, ChartDate, GetStats } from "../types";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 
 
@@ -12,23 +10,20 @@ import DashboardSkeleton from "../components/DashboardSkeleton";
 const Dashboard = () => {
   const { applications, loading: apLoading} = useApplications()
   const { interviews, loading: intLoading} = useInterviews()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [showNewAplication, SetShowNewAplication] = useState<boolean>(false)
-  const [dateShow, SetDateShow] = useState('This Month')
-
-  const navigate = useNavigate();
+  const [dateShow, SetDateShow] = useState<ChartDate>('This Month')
 
   const today = new Date()
 
   const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1)
   const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
 
-  const inRange = (date: string, from: Date, to?: Date) => {
+  const inRange = (date: string, from: Date, to?: Date): boolean => {
     const d = new Date(date)
     return to ? d > from && d <= to : d > from
   }
 
-  const getStats = (status?: string) => {
+  const getStats = (status?: string):GetStats => {
     const filtered = status ? applications.filter(a => a.status === status) : applications
     return {
       thisMonth: filtered.filter(a => inRange(a.date_applied, startOfThisMonth)),
@@ -63,7 +58,7 @@ const Dashboard = () => {
   const of = getStats('Offer')
   const re = getStats('Rejected')
 
-  const getChartData = (status?: string) => {
+  const getChartData = (status?: string): Applications[] => {
     const filtered = status ? applications.filter(a => a.status === status) : applications
     if (dateShow === 'Last Month') return filtered.filter(a => inRange(a.date_applied, startOfLastMonth))
     if (dateShow === 'All time') return filtered.filter(a => inRange(a.date_applied, new Date(0)))
@@ -103,68 +98,7 @@ const Dashboard = () => {
         <NewAplication onClose={() => SetShowNewAplication(false)} />
       )}
 
-      <nav className="flex items-center h-20 sm:h-15 p-5 gap-2 border-b border-gray-700 relative">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mr-2 text-gray-400 cursor-pointer hidden md:block">
-          <span className="material-symbols-outlined">
-            {sidebarOpen ? 'menu_open' : 'menu'}
-          </span>
-        </button>
-        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><span className="material-symbols-outlined mt-1" style={{ fontSize: '20px', color: 'black' }}>layers</span></div>
-        <h1 className="font-bold text-lg">JobTracker</h1>
-        <div className="absolute right-5 flex gap-1 cursor-pointer uppercase">
-          <button
-            onClick={async () => {
-              await supabase.auth.signOut()
-              navigate('/')
-            }}
-            className="text-gray-400 flex gap-0.5 items-center cursor-pointer hover:text-[#20dfbf] transition-colors"
-          >
-            logout
-            <span className="material-symbols-outlined mt-1" style={{ fontSize: '18px' }}>logout</span>
-          </button>
-        </div>
-      </nav>
-
       <div className="h-full w-full flex relative">
-
-        <nav className={`hidden md:flex flex-col gap-7 text-sm transition-all duration-300 overflow-hidden relative ${sidebarOpen ? 'w-70 p-4 border-r border-gray-700' : 'w-0 p-0'}`}>
-
-          <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-700 bg-[#223b37]">
-              <span className="material-symbols-outlined text-[#20dfbf]">account_circle</span>
-            </div>
-
-            <div className="flex flex-col justify-center">
-              <p className="text-[#20dfbf] font-bold">Professional</p>
-              <p className="text-gray-400 text-xs">Manifesting employment since 2025</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-5">
-
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="material-symbols-outlined">dashboard</span>
-              <p>Dashboard</p>
-            </div>
-
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="material-symbols-outlined">work</span>
-              <p>Application</p>
-            </div>
-
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="material-symbols-outlined">event_available</span>
-              <p>Interviews</p>
-            </div>
-
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="material-symbols-outlined">verified</span>
-              <p>Offers</p>
-            </div>
-
-          </div>
-
-        </nav>
 
         <div className="flex flex-col flex-wrap w-full pl-5 pr-5 pt-7 pb-30 lg:pb-10 gap-5">
 
@@ -248,7 +182,7 @@ const Dashboard = () => {
                   <h2 className="text-lg font-bold text-white">Application Statuses</h2>
                   <p className="text-sm text-gray-400">Current pipeline distribution</p>
                 </div>
-                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5 " value={dateShow} onChange={e => SetDateShow(e.target.value)}>
+                <select className="bg-[#132623] border border-[#1e3a36] text-gray-400 text-xs rounded-lg px-3 py-1.5 " value={dateShow} onChange={e => SetDateShow(e.target.value as ChartDate)}>
                   <option>This Month</option>
                   <option>Last Month</option>
                   <option>All time</option>
@@ -329,30 +263,6 @@ const Dashboard = () => {
         </div>
 
       </div>
-
-      <nav className="w-full h-15 flex border-t border-gray-700 justify-evenly md:hidden fixed bottom-0 bg-main">
-
-        <div className="flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined">dashboard_2</span>
-          <p>Dash</p>
-        </div>
-
-        <div className="flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined">work</span>
-          <p>Jobs</p>
-        </div>
-
-        <div className="flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined">event_available</span>
-          <p>Events</p>
-        </div>
-
-        <div className="flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined">verified</span>
-          <p>Offers</p>
-        </div>
-
-      </nav>
 
     </main>
     )}

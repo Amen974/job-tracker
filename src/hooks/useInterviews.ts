@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Interview } from "../types";
 
-export function useInterviews() {
+export function useInterviews(): {interviews: Interview[], loading: boolean} {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetch  = async () => {
       setLoading(true);
+      const user = (await supabase.auth.getUser()).data.user;
       const { data } = await supabase
         .from('interviews')
         .select(`
@@ -18,7 +19,8 @@ export function useInterviews() {
             role
           )
         `)
-        .order('interview_date', { ascending: true });
+        .order('interview_date', { ascending: true })
+        .eq('user_id',user?.id);
       setInterviews(data ?? []);
       setLoading(false);
     }

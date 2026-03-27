@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Applications } from "../types";
 
-export function useApplications() {
+export function useApplications(): {applications: Applications[], loading: boolean} {
   const [applications, setApplications] = useState<Applications[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetch = async () => {
       setLoading(true);
-      const { data } = await supabase.from('applications').select('*');
+      const user = (await supabase.auth.getUser()).data.user;
+      const { data } = await supabase.from('applications').select('*').eq('user_id',user?.id);
       setApplications(data ?? []);
       setLoading(false);
     }

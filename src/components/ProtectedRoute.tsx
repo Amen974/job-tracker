@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react"
-import type { ReactNode } from "react"
+import type { JSX, ReactNode } from "react"
 import { supabase } from "../lib/supabase"
 import { useNavigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(true);
+const ProtectedRoute = ({ children }: { children: ReactNode }): JSX.Element => {
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
-    const isSession = async () => {
+    const isSession = async (): Promise<void> => {
       const token = await supabase.auth.getSession();
       if (token.data.session === null) navigate('/')
       setLoading(false);
