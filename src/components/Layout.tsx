@@ -8,7 +8,7 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation()
   return (
-    <main className="bg-main min-h-screen text-white relative overflow-hidden">
+    <main className="bg-main min-h-screen text-white relative">
 
       <nav className="flex items-center h-20 sm:h-15 p-5 gap-2 border-b border-gray-700 relative">
         <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mr-2 text-gray-400 cursor-pointer hidden md:block">
@@ -49,22 +49,22 @@ const Layout = () => {
 
           <div className="flex flex-col gap-0.5">
 
-            <div onClick={() => navigate('/Dashboard')} className={`flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 ${location.pathname === '/Dashboard' && 'bg-[#182d2a] text-[#20dfbf] border-r-2 border-r-[#20dfbf]'}`}>
+            <div onClick={() => navigate('/Dashboard')} className={`flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95 ${location.pathname === '/Dashboard' && 'bg-[#182d2a] text-[#20dfbf] border-r-2 border-r-[#20dfbf]'}`}>
               <span className="material-symbols-outlined">dashboard</span>
               <p>Dashboard</p>
             </div>
 
-            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2">
+            <div onClick={() => navigate('/Applications')} className={`flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95 ${location.pathname === '/Applications' && 'bg-[#182d2a] text-[#20dfbf] border-r-2 border-r-[#20dfbf]'}`}>
               <span className="material-symbols-outlined">work</span>
               <p>Application</p>
             </div>
 
-            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2">
+            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95">
               <span className="material-symbols-outlined">event_available</span>
               <p>Interviews</p>
             </div>
 
-            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2">
+            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95">
               <span className="material-symbols-outlined">verified</span>
               <p>Offers</p>
             </div>
@@ -73,7 +73,7 @@ const Layout = () => {
 
         </aside>
 
-        <div className='flex-1'>
+        <div className='flex-1 min-w-70'>
           <Outlet />
         </div>
 
@@ -86,7 +86,7 @@ const Layout = () => {
           <p>Dash</p>
         </div>
 
-        <div className="flex flex-col justify-center items-center">
+        <div onClick={() => navigate('/Applications')} className="flex flex-col justify-center items-center">
           <span className="material-symbols-outlined">work</span>
           <p>Jobs</p>
         </div>

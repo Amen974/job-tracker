@@ -75,7 +75,7 @@ const Dashboard = () => {
   const appliedPct = total === 0 ? 0 : Math.round((chartAplyed.length / total) * 100)
   const interviewPct = total === 0 ? 0 : Math.round((chartInt.length / total) * 100)
   const offerPct = total === 0 ? 0 : Math.round((chartOf.length / total) * 100)
-  const rejectedPct = 100 - appliedPct - interviewPct - offerPct
+  const rejectedPct = total === 0 ? 0 : 100 - appliedPct - interviewPct - offerPct
 
   const upcoming = interviews.filter(i => {
     const interviewDateTime = new Date(`${i.interview_date}T${i.interview_time}`)
@@ -92,7 +92,7 @@ const Dashboard = () => {
   return (
     <>
     {apLoading || intLoading ? (<DashboardSkeleton/>) : (
-      <main className="bg-main min-h-screen text-white relative overflow-hidden">
+      <main className="bg-main min-h-screen text-white relative">
 
       {showNewAplication && (
         <NewAplication onClose={() => SetShowNewAplication(false)} />

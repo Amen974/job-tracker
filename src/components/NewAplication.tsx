@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
 import type { Status, Type } from "../types"
+import ReactDOM from "react-dom"
 
 const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
   const today = new Date().toISOString().split('T')[0]
@@ -50,8 +51,12 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
     onClose()
   }
 
-  return (
-    <div className="h-screen w-screen flex items-center justify-center fixed z-10 backdrop-blur-xs bg-main/90 shadow-2xl">
+  const portalRoot = document.getElementById('portal');
+
+  if (!portalRoot) return null;
+
+  return ReactDOM.createPortal (
+    <div className="inset-0 flex items-center justify-center fixed backdrop-blur-xs bg-main/90 shadow-2xl text-white">
       <div className="h-[90%] w-[90%] sm:h-180 sm:w-130 bg-[#182d2a] border border-[#20dfbf1a] rounded-xl flex flex-col">
 
         <div className="h-20 sm:h-15 w-full border-b border-gray-700 flex items-center pl-4 gap-2">
@@ -189,7 +194,8 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
         </div>
 
       </div>
-    </div>
+    </div>,
+    portalRoot
   )
 }
 
