@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useApplications } from "../hooks/useApplications"
 import { useInterviews } from "../hooks/useInterviews"
 import NewAplication from "../components/NewAplication";
-import type { Applications, ChartDate, GetStats } from "../types";
+import type { Applicationstype, ChartDate, GetStats } from "../types";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 
 
@@ -31,14 +31,14 @@ const Dashboard = () => {
     }
   }
 
-  const calculatePercentageChange = (thisMonth: Applications[], lastMonth: Applications[]): number => {
+  const calculatePercentageChange = (thisMonth: Applicationstype[], lastMonth: Applicationstype[]): number => {
     if (thisMonth.length === 0 && lastMonth.length === 0) return 0
     if (lastMonth.length === 0) return 100
     if (thisMonth.length === 0) return 0
     return Math.round(((thisMonth.length - lastMonth.length) / lastMonth.length) * 100)
   }
 
-  const calculateInt = (thisMonth: Applications[], lastMonth: Applications[]): string => {
+  const calculateInt = (thisMonth: Applicationstype[], lastMonth: Applicationstype[]): string => {
     const diff = thisMonth.length - lastMonth.length
     if (diff <= 0) return 'no new ones 😬'
     return `+${diff} new 🎉`
@@ -58,7 +58,7 @@ const Dashboard = () => {
   const of = getStats('Offer')
   const re = getStats('Rejected')
 
-  const getChartData = (status?: string): Applications[] => {
+  const getChartData = (status?: string): Applicationstype[] => {
     const filtered = status ? applications.filter(a => a.status === status) : applications
     if (dateShow === 'Last Month') return filtered.filter(a => inRange(a.date_applied, startOfLastMonth))
     if (dateShow === 'All time') return filtered.filter(a => inRange(a.date_applied, new Date(0)))

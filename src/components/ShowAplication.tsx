@@ -1,8 +1,8 @@
 import ReactDOM from "react-dom"
-import type { Applications } from "../types";
+import type { Applicationstype } from "../types";
 import { useInterviews } from "../hooks/useInterviews";
 
-const ShowAplication = ({ selectedApplication, onClose }: { selectedApplication: Applications | null, onClose: () => void }) => {
+const ShowAplication = ({ selectedApplication, onClose }: { selectedApplication: Applicationstype | null, onClose: () => void }) => {
   const { interviews } = useInterviews()
 
   const interview = interviews.find((i) => i.application_id === selectedApplication?.id)

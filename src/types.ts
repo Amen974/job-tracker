@@ -1,6 +1,6 @@
 export type Status = 'Applied' | 'Interview' | 'Offer' | 'Rejected';
 
-export type Applications = {
+export type Applicationstype = {
   id: string;
   user_id: string;
   company: string;
@@ -23,12 +23,12 @@ export type Interview = {
   type: Type;
   notes: string;
   created_at: string;
-  applications: Applications;
+  applications: Applicationstype;
 }
 
 export type GetStats = {
-  thisMonth: Applications[]
-  lastMonth: Applications[]
+  thisMonth: Applicationstype[]
+  lastMonth: Applicationstype[]
 }
 
 export type ChartDate = 'This Month' | 'Last Month' | 'All time'

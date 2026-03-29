@@ -1,6 +1,6 @@
 import { useState, type JSX } from "react"
 import { useApplications } from "../hooks/useApplications"
-import type { Applications, Filter, Status } from "../types"
+import type { Applicationstype, Filter, Status } from "../types"
 import ShowAplication from "../components/ShowAplication"
 import { supabase } from "../lib/supabase"
 import NewAplication from "../components/NewAplication"
@@ -10,7 +10,7 @@ import ApplicationsSkeleton from "../components/ApplicationsSkeleton"
 const Applications = () => {
   const { applications, loading } = useApplications()
   const [showApplication, setShowApplication] = useState<boolean>(false)
-  const [selectedApplication, setSelectedApplication] = useState <Applications | null>(null)
+  const [selectedApplication, setSelectedApplication] = useState <Applicationstype | null>(null)
   const [isEdit, setisEdit] = useState<boolean>(false)
   const [filter, setFilter] = useState<Filter>('All')
 
@@ -38,7 +38,7 @@ const Applications = () => {
     if (error) console.error('Delete failed:', error);
   }
 
-  const handelFilter = (): Applications[] => {
+  const handelFilter = (): Applicationstype[] => {
     if(filter === 'All'){
       return applications
     }else{

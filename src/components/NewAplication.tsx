@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
-import type { Applications, Status, Type } from "../types"
+import type { Applicationstype, Status, Type } from "../types"
 import ReactDOM from "react-dom"
 
-const NewAplication = ({ onClose, isEdit, selectedApplication}: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applications | null}) => {
+const NewAplication = ({ onClose, isEdit, selectedApplication}: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applicationstype | null}) => {
   const today = new Date().toISOString().split('T')[0]
 
   const [company, setCompany] = useState<string>(selectedApplication?.company ?? '')
