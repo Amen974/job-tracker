@@ -32,3 +32,5 @@ export type GetStats = {
 }
 
 export type ChartDate = 'This Month' | 'Last Month' | 'All time'
+
+export type Filter = 'All' | Status

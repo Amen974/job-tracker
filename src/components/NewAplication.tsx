@@ -1,17 +1,17 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
-import type { Status, Type } from "../types"
+import type { Applications, Status, Type } from "../types"
 import ReactDOM from "react-dom"
 
-const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
+const NewAplication = ({ onClose, isEdit, selectedApplication}: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applications | null}) => {
   const today = new Date().toISOString().split('T')[0]
 
-  const [company, setCompany] = useState<string>('')
-  const [role, setRole] = useState<string>('')
-  const [status, setStatus] = useState<Status>('Applied')
-  const [dateApplied, setDateApplied] = useState<string>(today)
-  const [jobUrl, setJobUrl] = useState<string>('')
-  const [notes, setNotes] = useState<string>('')
+  const [company, setCompany] = useState<string>(selectedApplication?.company ?? '')
+  const [role, setRole] = useState<string>(selectedApplication?.role ?? '')
+  const [status, setStatus] = useState<Status>(selectedApplication?.status ?? 'Applied')
+  const [dateApplied, setDateApplied] = useState<string>(selectedApplication?.date_applied ?? today)
+  const [jobUrl, setJobUrl] = useState<string>(selectedApplication?.job_url ?? '')
+  const [notes, setNotes] = useState<string>(selectedApplication?.notes ?? '')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const now = new Date().toTimeString().slice(0, 5)
@@ -23,7 +23,35 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
 
   const handleSubmit = async (): Promise<void> => {
     setIsSubmitting(true)
-    try {
+    if (isEdit) {
+      try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: app } = await supabase.from('applications').update({
+        user_id: user?.id,
+        company, role, status,
+        date_applied: dateApplied,
+        job_url: jobUrl,
+        notes
+      }).eq('id', selectedApplication?.id).select().single()
+
+      if (status === 'Interview' && app) {
+        await supabase.from('interviews').update({
+          user_id: user?.id,
+          application_id: app.id,
+          interview_date: interviewDate,
+          interview_time: interviewTime,
+          type: interviewType,
+          notes: interviewNotes
+        }).eq('application_id', selectedApplication?.id)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false)
+      onClose()
+    }
+    }else{
+      try {
       const { data: { user } } = await supabase.auth.getUser()
       const { data: app } = await supabase.from('applications').insert({
         user_id: user?.id,
@@ -47,12 +75,13 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
       console.log(error)
     } finally {
       setIsSubmitting(false)
+      onClose()
     }
-    onClose()
+    }
+    
   }
 
   const portalRoot = document.getElementById('portal');
-
   if (!portalRoot) return null;
 
   return ReactDOM.createPortal (
@@ -190,7 +219,7 @@ const NewAplication = ({ onClose, }: { onClose: () => void, }) => {
 
         <div className="h-20 sm:h-15 w-full border-t border-gray-700 flex items-center justify-end pr-4 sm:pr-7 gap-5 sm:gap-7">
           <button onClick={onClose} className="text-gray-400 text-sm cursor-pointer">Cancel</button>
-          <button onClick={handleSubmit} disabled={isSubmitting} className="flex bg-green px-6 py-3 sm:py-2 rounded-lg hover:brightness-110 font-semibold text-sm items-center cursor-pointer text-black disabled:opacity-70 gap-1">Add Application {isSubmitting && (<div className="border-4 border-white border-t-[#20dfbf] rounded-full h-4 w-4 animate-spin"></div>)}</button>
+          <button onClick={handleSubmit} disabled={isSubmitting} className="flex bg-green px-6 py-3 sm:py-2 rounded-lg hover:brightness-110 font-semibold text-sm items-center cursor-pointer text-black disabled:opacity-70 gap-1">{isEdit ? 'Save' : 'Add Application'} {isSubmitting && (<div className="border-4 border-white border-t-[#20dfbf] rounded-full h-4 w-4 animate-spin"></div>)}</button>
         </div>
 
       </div>

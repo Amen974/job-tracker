@@ -1,10 +1,18 @@
-import type { JSX } from "react"
+import { useState, type JSX } from "react"
 import { useApplications } from "../hooks/useApplications"
-import type { Status } from "../types"
+import type { Applications, Filter, Status } from "../types"
+import ShowAplication from "../components/ShowAplication"
+import { supabase } from "../lib/supabase"
+import NewAplication from "../components/NewAplication"
+import ApplicationsSkeleton from "../components/ApplicationsSkeleton"
 
 
 const Applications = () => {
-  const { applications } = useApplications()
+  const { applications, loading } = useApplications()
+  const [showApplication, setShowApplication] = useState<boolean>(false)
+  const [selectedApplication, setSelectedApplication] = useState <Applications | null>(null)
+  const [isEdit, setisEdit] = useState<boolean>(false)
+  const [filter, setFilter] = useState<Filter>('All')
 
   const applayStyle = (status: Status): { style: string, span: JSX.Element } => {
     let style: string
@@ -24,9 +32,27 @@ const Applications = () => {
     }
     return {style, span}
   }
+
+  const handleDelete = async (id: string): Promise<void> => {
+    const {error} = await supabase.from('applications').delete().eq('id',id);
+    if (error) console.error('Delete failed:', error);
+  }
+
+  const handelFilter = (): Applications[] => {
+    if(filter === 'All'){
+      return applications
+    }else{
+      return applications.filter((a)=>a.status === filter)
+    }
+  }
+
+  const afterFilter = handelFilter()
   
   return (
     <main className="bg-main min-h-screen text-white relative overflow-hidden flex flex-col w-full h-full pl-5 pr-5 pt-7 gap-7">
+
+      {showApplication && (<ShowAplication  selectedApplication={selectedApplication} onClose={()=>setShowApplication(false)}/>)}
+      {isEdit && selectedApplication && (<NewAplication onClose={() => setisEdit(false)} isEdit={isEdit} selectedApplication={selectedApplication}/>)}
 
       <div className='flex flex-col gap-2'>
         <h1 className="text-3xl font-bold">Applications</h1>
@@ -35,16 +61,18 @@ const Applications = () => {
 
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap gap-2">
-          <button className="text-gray-400 text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer hover:text-white active:scale-95">All</button>
-          <button className="text-gray-400 text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer hover:text-white active:scale-95">APPLIED</button>
-          <button className="text-gray-400 text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer hover:text-white active:scale-95">INTERVIEW</button>
-          <button className="text-gray-400 text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer hover:text-white active:scale-95">OFFER</button>
-          <button className="text-gray-400 text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer hover:text-white active:scale-95">REJECTED</button>
+          <button onClick={()=>setFilter('All')} className={`text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer active:scale-95 ${filter === 'All' ? 'bg-[#20dfbf] text-black' : 'text-gray-400 hover:text-white'}`}>All</button>
+          <button onClick={()=>setFilter('Applied')}  className={`text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer active:scale-95 ${filter === 'Applied' ? 'bg-[#20dfbf] text-black' : 'text-gray-400 hover:text-white'}`}>APPLIED</button>
+          <button onClick={()=>setFilter('Interview')}  className={`text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer active:scale-95 ${filter === 'Interview' ? 'bg-[#20dfbf] text-black' : 'text-gray-400 hover:text-white'}`}>INTERVIEW</button>
+          <button onClick={()=>setFilter('Offer')}  className={`text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer active:scale-95 ${filter === 'Offer' ? 'bg-[#20dfbf] text-black' : 'text-gray-400 hover:text-white'}`}>OFFER</button>
+          <button onClick={()=>setFilter('Rejected')}  className={`text-xs font-bold border border-gray-700 rounded-full px-5 py-2 cursor-pointer active:scale-95 ${filter === 'Rejected' ? 'bg-[#20dfbf] text-black' : 'text-gray-400 hover:text-white'}`}>REJECTED</button>
         </div>
 
+        {loading && (<ApplicationsSkeleton />)}
+
         <div className="flex flex-col gap-4">
-          {applications.map((a)=>(
-            <div key={a.id} className="bg-[#1ab59b]/10 min-w-full h-40 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer">
+          {afterFilter.map((a)=>(
+            <div onClick={()=>{setShowApplication(true); setSelectedApplication(a)} } key={a.id} className="bg-[#1ab59b]/10 min-w-full h-40 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer">
               <div className="flex items-center flex-1 px-5">
                 <div className="flex-1 gap-2 flex items-center">
                   {applayStyle(a.status).span}
@@ -63,8 +91,8 @@ const Applications = () => {
                   <p> Applied {a.date_applied}</p>
                 </div>
                 <div className="flex gap-5">
-                  <button className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px'}}>edit</span></button>
-                  <button className="cursor-pointer"><span className="material-symbols-outlined hover:text-white  " style={{ fontSize: '16px', marginTop: '3px' }}>delete</span></button>
+                  <button onClick={(e)=>{e.stopPropagation(); setisEdit(true); setSelectedApplication(a)}} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px'}}>edit</span></button>
+                  <button onClick={(e)=>{e.stopPropagation(); handleDelete(a.id)}} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white  " style={{ fontSize: '16px', marginTop: '3px' }}>delete</span></button>
                 </div>
                 
               </div>
