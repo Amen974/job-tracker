@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
-import type { Applicationstype, Status, Type } from "../types"
+import type { Applicationstype, Interview, Status, Type } from "../types"
 import ReactDOM from "react-dom"
 
-const NewAplication = ({ onClose, isEdit, selectedApplication}: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applicationstype | null}) => {
+const NewAplication = ({ onClose, isEdit, selectedApplication, targetInterview, }: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applicationstype | null, targetInterview?:Interview | null, }) => {
   const today = new Date().toISOString().split('T')[0]
 
   const [company, setCompany] = useState<string>(selectedApplication?.company ?? '')
@@ -16,10 +16,10 @@ const NewAplication = ({ onClose, isEdit, selectedApplication}: { onClose: () =>
 
   const now = new Date().toTimeString().slice(0, 5)
 
-  const [interviewDate, setInterviewDate] = useState<string>(today)
-  const [interviewTime, setInterviewTime] = useState<string>(now)
-  const [interviewType, setInterviewType] = useState<Type>('Phone')
-  const [interviewNotes, setInterviewNotes] = useState<string>('')
+  const [interviewDate, setInterviewDate] = useState<string>(targetInterview?.interview_date ?? today)
+  const [interviewTime, setInterviewTime] = useState<string>(targetInterview?.interview_time ?? now)
+  const [interviewType, setInterviewType] = useState<Type>(targetInterview?.type ?? 'Phone')
+  const [interviewNotes, setInterviewNotes] = useState<string>(targetInterview?.notes ?? '')
 
   const handleSubmit = async (): Promise<void> => {
     setIsSubmitting(true)

@@ -1,19 +1,22 @@
 import { useState, type JSX } from "react"
 import { useApplications } from "../hooks/useApplications"
-import type { Applicationstype, Filter, Status } from "../types"
+import type { Applicationstype, Filter, Interview, Status } from "../types"
 import ShowAplication from "../components/ShowAplication"
 import { supabase } from "../lib/supabase"
 import NewAplication from "../components/NewAplication"
 import ApplicationsSkeleton from "../components/ApplicationsSkeleton"
+import { useInterviews } from "../hooks/useInterviews"
 
 
 const Applications = () => {
   const { applications, loading } = useApplications()
+  const { interviews, } = useInterviews()
   const [showApplication, setShowApplication] = useState<boolean>(false)
   const [selectedApplication, setSelectedApplication] = useState<Applicationstype | null>(null)
   const [isEdit, setisEdit] = useState<boolean>(false)
   const [filter, setFilter] = useState<Filter>('All')
   const [showNewAplication, SetShowNewAplication] = useState<boolean>(false)
+  const [targetInterview, setTargetInterview] = useState<Interview | null>(null)
 
   const applayStyle = (status: Status): { style: string, span: JSX.Element } => {
     let style: string
@@ -49,11 +52,16 @@ const Applications = () => {
 
   const afterFilter = handelFilter()
 
+  const getInterview = (id:string, status:Status,): Interview | null => {
+    if (status !== 'Interview') return null
+    return interviews.find((i)=> i.application_id === id) ?? null;
+  }
+
   return (
     <main className="bg-main min-h-screen text-white relative overflow-hidden flex flex-col w-full h-full pl-5 pr-5 pt-7 gap-7">
 
       {showApplication && (<ShowAplication selectedApplication={selectedApplication} onClose={() => setShowApplication(false)} />)}
-      {isEdit && selectedApplication && (<NewAplication onClose={() => setisEdit(false)} isEdit={isEdit} selectedApplication={selectedApplication} />)}
+      {isEdit && selectedApplication && (<NewAplication onClose={() => setisEdit(false)} isEdit={isEdit} selectedApplication={selectedApplication} targetInterview={targetInterview} />)}
       {showNewAplication && (<NewAplication onClose={() => SetShowNewAplication(false)} />)}
 
       <div className='flex flex-col gap-2'>
@@ -93,7 +101,7 @@ const Applications = () => {
                   <p> Applied {a.date_applied}</p>
                 </div>
                 <div className="flex gap-5">
-                  <button onClick={(e) => { e.stopPropagation(); setisEdit(true); setSelectedApplication(a) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px' }}>edit</span></button>
+                  <button onClick={(e) => { e.stopPropagation(); setisEdit(true); setSelectedApplication(a); setTargetInterview(getInterview(a.id, a.status)) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px' }}>edit</span></button>
                   <button onClick={(e) => { e.stopPropagation(); handleDelete(a.id) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white  " style={{ fontSize: '16px', marginTop: '3px' }}>delete</span></button>
                 </div>
 
