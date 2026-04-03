@@ -4,6 +4,7 @@ import { useInterviews } from "../hooks/useInterviews"
 import NewAplication from "../components/NewAplication";
 import type { Applicationstype, ChartDate, GetStats } from "../types";
 import DashboardSkeleton from "../components/DashboardSkeleton";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -17,6 +18,8 @@ const Dashboard = () => {
 
   const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1)
   const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+
+   const navigate = useNavigate();
 
   const inRange = (date: string, from: Date, to?: Date): boolean => {
     const d = new Date(date)
@@ -115,7 +118,7 @@ const Dashboard = () => {
 
           <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
 
-            <div className="bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
+            <div className="bg-[#1ab59b]/10 p-5 border border-[#20dfbf1a] rounded-xl shadow-2xl">
               <div className="flex justify-between items-start">
                 <div className="p-2 bg-[#20dfbf]/10 rounded-lg">
                   <span className="material-symbols-outlined text-[#20dfbf]">description</span>
@@ -129,7 +132,7 @@ const Dashboard = () => {
               <div className="mt-2 text-xs text-gray-400">vs. {ap.lastMonth.length} last month</div>
             </div>
 
-            <div className="bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
+            <div className="bg-[#1ab59b]/10 p-5 border border-[#20dfbf1a] rounded-xl shadow-2xl">
               <div className="flex justify-between items-start">
                 <div className="p-2 bg-[#7dd3fc]/10 rounded-lg">
                   <span className="material-symbols-outlined text-[#7dd3fc]">groups</span>
@@ -144,7 +147,7 @@ const Dashboard = () => {
             </div>
 
 
-            <div className="bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
+            <div className="bg-[#1ab59b]/10 p-5 border border-[#20dfbf1a] rounded-xl shadow-2xl">
               <div className="flex justify-between items-start">
                 <div className="p-2 bg-[#1ab59b]/10 rounded-lg">
                   <span className="material-symbols-outlined text-[#1ab59b]">verified</span>
@@ -158,7 +161,7 @@ const Dashboard = () => {
               <div className="mt-2 text-xs text-gray-400">{of.thisMonth.length > 0 ? 'Pending your review' : 'hope u get one'}</div>
             </div>
 
-            <div className="bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
+            <div className="bg-[#1ab59b]/10 p-5 border border-[#20dfbf1a] rounded-xl shadow-2xl">
               <div className="flex justify-between items-start">
                 <div className="p-2 bg-[#fb7185]/10 rounded-lg">
                   <span className="material-symbols-outlined text-[#fb7185]">cancel</span>
@@ -176,7 +179,7 @@ const Dashboard = () => {
 
           <div className="flex flex-wrap w-full gap-5 via-gray-50 min-h-200 sm:min-h-120">
 
-            <div className="flex-3 w-full bg-[#182d2a] p-6 border border-[#20dfbf1a] rounded-xl ">
+            <div className="flex-3 w-full bg-[#1ab59b]/10 p-6 border border-[#20dfbf1a] rounded-xl shadow-2xl">
               <div className="flex justify-between items-center mb-8">
                 <div>
                   <h2 className="text-lg font-bold text-white">Application Statuses</h2>
@@ -230,7 +233,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="flex-1 min-w-60 bg-[#182d2a] p-5 border border-[#20dfbf1a] rounded-xl">
+            <div className="flex-1 min-w-60 bg-[#1ab59b]/10 p-5 border border-[#20dfbf1a] rounded-xl shadow-2xl">
 
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-bold">Upcoming</h2>
@@ -253,7 +256,7 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              <button className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-gray-700 rounded-lg hover:bg-[#223b37] hover:text-white uppercase cursor-pointer">
+              <button onClick={() => navigate('/Interviews')} className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-gray-700 rounded-lg hover:bg-[#223b37] hover:text-white uppercase cursor-pointer">
                 View Full Calendar {upcoming.length === 0 && ('(its empty, I know)')}
               </button>
             </div>

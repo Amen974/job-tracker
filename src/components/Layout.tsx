@@ -59,14 +59,9 @@ const Layout = () => {
               <p>Application</p>
             </div>
 
-            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95">
+            <div onClick={() => navigate('/Interviews')} className={`flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95 ${location.pathname === '/Interviews' && 'bg-[#182d2a] text-[#20dfbf] border-r-2 border-r-[#20dfbf]'}`}>
               <span className="material-symbols-outlined">event_available</span>
               <p>Interviews</p>
-            </div>
-
-            <div className="flex gap-1 items-center cursor-pointer hover:text-[#20dfbf] h-10 pl-2 active:scale-95">
-              <span className="material-symbols-outlined">verified</span>
-              <p>Offers</p>
             </div>
 
           </div>
@@ -81,24 +76,19 @@ const Layout = () => {
 
       <nav className="w-full h-15 flex border-t border-gray-700 justify-evenly md:hidden fixed bottom-0 bg-main">
 
-        <div  onClick={() => navigate('/dashboard')} className="flex flex-col justify-center items-center">
+        <div  onClick={() => navigate('/Dashboard')} className={`flex flex-col justify-center items-center ${location.pathname === '/Dashboard' && 'text-[#20dfbf]'}`}>
           <span className="material-symbols-outlined">dashboard_2</span>
           <p>Dash</p>
         </div>
 
-        <div onClick={() => navigate('/Applications')} className="flex flex-col justify-center items-center">
+        <div onClick={() => navigate('/Applications')} className={`flex flex-col justify-center items-center ${location.pathname === '/Applications' && 'text-[#20dfbf]'}`}>
           <span className="material-symbols-outlined">work</span>
           <p>Jobs</p>
         </div>
 
-        <div className="flex flex-col justify-center items-center">
+        <div onClick={() => navigate('/Interviews')} className={`flex flex-col justify-center items-center ${location.pathname === '/Interviews' && 'text-[#20dfbf]'}`}>
           <span className="material-symbols-outlined">event_available</span>
           <p>Events</p>
-        </div>
-
-        <div className="flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined">verified</span>
-          <p>Offers</p>
         </div>
 
       </nav>

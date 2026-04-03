@@ -16,7 +16,11 @@ export function useInterviews(): {interviews: Interview[], loading: boolean} {
           *,
           applications (
             company,
-            role
+            role,
+            status,
+            date_applied,
+            job_url,
+            notes
           )
         `)
         .order('interview_date', { ascending: true })

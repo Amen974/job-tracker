@@ -16,6 +16,10 @@ input:-webkit-autofill:focus {
   background-color: #20dfbf;
 }
 
+.text-green{
+  color: #20dfbf;
+}
+
 .shadow-costom{
   background-image: radial-gradient(circle at 50% 50%, #20dfbf 0%, transparent 70%)
 }
