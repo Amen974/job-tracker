@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useApplications } from "../hooks/useApplications"
 import { useInterviews } from "../hooks/useInterviews"
-import NewAplication from "../components/NewAplication";
+import ApplicationForm from "../components/ApplicationForm";
 import type { Applicationstype, ChartDate, GetStats } from "../types";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 import { useNavigate } from "react-router-dom";
@@ -98,7 +98,7 @@ const Dashboard = () => {
       <main className="bg-main min-h-screen text-white relative">
 
       {showNewAplication && (
-        <NewAplication onClose={() => SetShowNewAplication(false)} />
+        <ApplicationForm onClose={() => SetShowNewAplication(false)} />
       )}
 
       <div className="h-full w-full flex relative">

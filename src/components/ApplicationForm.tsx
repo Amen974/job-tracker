@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase"
 import type { Applicationstype, Interview, Status, Type } from "../types"
 import ReactDOM from "react-dom"
 
-const NewAplication = ({ onClose, isEdit, selectedApplication, targetInterview, }: { onClose: () => void, isEdit?:boolean, selectedApplication?:Applicationstype | null, targetInterview?:Interview | null, }) => {
+const ApplicationForm = ({ onClose, isEdit, selectedApplication, targetInterview, }: { onClose: () => void, isEdit?: boolean, selectedApplication?: Applicationstype | null, targetInterview?: Interview | null, }) => {
   const today = new Date().toISOString().split('T')[0]
 
   const [company, setCompany] = useState<string>(selectedApplication?.company ?? '')
@@ -21,77 +21,89 @@ const NewAplication = ({ onClose, isEdit, selectedApplication, targetInterview, 
   const [interviewType, setInterviewType] = useState<Type>(targetInterview?.type ?? 'Phone')
   const [interviewNotes, setInterviewNotes] = useState<string>(targetInterview?.notes ?? '')
 
+  const [formError, setFormError] = useState<string>('')
+
   const handleSubmit = async (): Promise<void> => {
+    if (!company || !role || !dateApplied) {
+      setFormError('Please fill in Company, Role, and Date Applied.')
+      return
+    }
+    if (status === 'Interview' && (!interviewDate || !interviewTime)) {
+      setFormError('Please fill in Interview Date and Time.')
+      return
+    }
+    setFormError('')
     setIsSubmitting(true)
     if (isEdit) {
       try {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: app } = await supabase.from('applications').update({
-        user_id: user?.id,
-        company, role, status,
-        date_applied: dateApplied,
-        job_url: jobUrl,
-        notes
-      }).eq('id', selectedApplication?.id).select().single()
-
-      if (status === 'Interview' && app) {
-        await supabase.from('interviews').update({
+        const { data: { user } } = await supabase.auth.getUser()
+        const { data: app } = await supabase.from('applications').update({
           user_id: user?.id,
-          application_id: app.id,
-          interview_date: interviewDate,
-          interview_time: interviewTime,
-          type: interviewType,
-          notes: interviewNotes
-        }).eq('application_id', selectedApplication?.id)
+          company, role, status,
+          date_applied: dateApplied,
+          job_url: jobUrl,
+          notes
+        }).eq('id', selectedApplication?.id).select().single()
+
+        if (status === 'Interview' && app) {
+          await supabase.from('interviews').update({
+            user_id: user?.id,
+            application_id: app.id,
+            interview_date: interviewDate,
+            interview_time: interviewTime,
+            type: interviewType,
+            notes: interviewNotes
+          }).eq('application_id', selectedApplication?.id)
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsSubmitting(false)
+        onClose()
       }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsSubmitting(false)
-      onClose()
-    }
-    }else{
+    } else {
       try {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: app } = await supabase.from('applications').insert({
-        user_id: user?.id,
-        company, role, status,
-        date_applied: dateApplied,
-        job_url: jobUrl,
-        notes
-      }).select().single()
-
-      if (status === 'Interview' && app) {
-        await supabase.from('interviews').insert({
+        const { data: { user } } = await supabase.auth.getUser()
+        const { data: app } = await supabase.from('applications').insert({
           user_id: user?.id,
-          application_id: app.id,
-          interview_date: interviewDate,
-          interview_time: interviewTime,
-          type: interviewType,
-          notes: interviewNotes
-        })
+          company, role, status,
+          date_applied: dateApplied,
+          job_url: jobUrl,
+          notes
+        }).select().single()
+
+        if (status === 'Interview' && app) {
+          await supabase.from('interviews').insert({
+            user_id: user?.id,
+            application_id: app.id,
+            interview_date: interviewDate,
+            interview_time: interviewTime,
+            type: interviewType,
+            notes: interviewNotes
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsSubmitting(false)
+        onClose()
       }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsSubmitting(false)
-      onClose()
     }
-    }
-    
   }
 
   const portalRoot = document.getElementById('portal');
   if (!portalRoot) return null;
 
-  return ReactDOM.createPortal (
+  return ReactDOM.createPortal(
     <div className="inset-0 flex items-center justify-center fixed backdrop-blur-xs bg-main/90 shadow-2xl text-white">
-      <div className="h-[90%] w-[90%] sm:h-180 sm:w-130 bg-[#182d2a] border border-[#20dfbf1a] rounded-xl flex flex-col">
+      <div className="h-[90%] w-[90%] sm:h-180 sm:w-130 bg-[#182d2a] border border-[#20dfbf1a] rounded-xl flex flex-col ">
 
         <div className="h-20 sm:h-15 w-full border-b border-gray-700 flex items-center pl-4 gap-2">
           <span className="material-symbols-outlined text-[#20dfbf] bg-[#20dfbf]/10 p-2 rounded-lg">add_box</span>
           <p className="text-xl font-bold">New Application</p>
         </div>
+
+        {formError && <div className="bg-[#4c0519] rounded-xl p-3 border border-[#881337] flex justify-center gap-1 mt-3"><p className="text-[#fb7185] text-sm ">{formError}</p></div>}
 
         <div className="flex-1 px-8 py-6 overflow-y-auto space-y-8">
 
@@ -228,4 +240,4 @@ const NewAplication = ({ onClose, isEdit, selectedApplication, targetInterview, 
   )
 }
 
-export default NewAplication
+export default ApplicationForm

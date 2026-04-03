@@ -3,7 +3,7 @@ import { useApplications } from "../hooks/useApplications"
 import type { Applicationstype, Filter, Interview, Status } from "../types"
 import ShowAplication from "../components/ShowAplication"
 import { supabase } from "../lib/supabase"
-import NewAplication from "../components/NewAplication"
+import ApplicationForm from "../components/ApplicationForm"
 import ApplicationsSkeleton from "../components/ApplicationsSkeleton"
 import { useInterviews } from "../hooks/useInterviews"
 
@@ -61,8 +61,8 @@ const Applications = () => {
     <main className="bg-main min-h-screen text-white relative overflow-hidden flex flex-col w-full h-full pl-5 pr-5 pt-7 gap-7">
 
       {showApplication && (<ShowAplication selectedApplication={selectedApplication} onClose={() => setShowApplication(false)} />)}
-      {isEdit && selectedApplication && (<NewAplication onClose={() => setisEdit(false)} isEdit={isEdit} selectedApplication={selectedApplication} targetInterview={targetInterview} />)}
-      {showNewAplication && (<NewAplication onClose={() => SetShowNewAplication(false)} />)}
+      {isEdit && selectedApplication && (<ApplicationForm onClose={() => setisEdit(false)} isEdit={isEdit} selectedApplication={selectedApplication} targetInterview={targetInterview} />)}
+      {showNewAplication && (<ApplicationForm onClose={() => SetShowNewAplication(false)} />)}
 
       <div className='flex flex-col gap-2'>
         <h1 className="text-3xl font-bold">Applications</h1>
