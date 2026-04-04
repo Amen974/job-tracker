@@ -5,7 +5,7 @@ A full-stack job application tracking app built to manage and monitor your entir
 🔗 **Live Demo:** [job-tracker-xi-ten.vercel.app](https://job-tracker-xi-ten.vercel.app)  
 > Click **Demo Account** on the login page to explore without signing up.
 
-![JobTracker Dashboard](/Screenshot Dashboard.png)
+![JobTracker Dashboard](./public/Dashboard.png)
 
 ---
 
