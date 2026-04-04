@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# JobTracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack job application tracking app built to manage and monitor your entire job search pipeline — from application to offer.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** [job-tracker-xi-ten.vercel.app](https://job-tracker-xi-ten.vercel.app)  
+> Click **Demo Account** on the login page to explore without signing up.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![JobTracker Dashboard](/Screenshot Dashboard.png)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Authentication** — Secure login and registration via Supabase Auth
+- **Applications** — Full CRUD, status tracking, filtering by status, and detail view
+- **Interviews** — Track upcoming and past interviews, edit and delete, grouped by date
+- **Dashboard** — Real-time stats, donut chart with date filters, and upcoming interview preview
+- **Realtime** — Live updates across all pages using Supabase Realtime
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Layer | Technology |
+|---|---|
+| Frontend | React + TypeScript + Vite |
+| Styling | Tailwind CSS |
+| Backend | Supabase (Auth, Database, Realtime) |
+| Routing | React Router v6 |
+| Deployment | Vercel |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## Running Locally
+
+### Prerequisites
+- Node.js 18+
+- A Supabase project
+
+### Setup
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/Amen974/job-tracker.git
+cd job-tracker
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+3. Create a `.env` file in the root
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. Start the dev server
+
+```bash
+npm run dev
+```
+
+---
+
+## Database Schema
+
+**applications**
+- `id`, `user_id`, `company`, `role`, `status`, `date_applied`, `job_url`, `notes`, `created_at`
+
+**interviews**
+- `id`, `application_id`, `user_id`, `interview_date`, `interview_time`, `type`, `notes`, `created_at`
+
+---
+
+## Author
+
+Built by Amen — actively seeking a junior frontend role.

@@ -16,7 +16,7 @@ const Layout = () => {
             {sidebarOpen ? 'menu_open' : 'menu'}
           </span>
         </button>
-        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><span className="material-symbols-outlined mt-1" style={{ fontSize: '20px', color: 'black' }}>layers</span></div>
+        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><span className="material-symbols-outlined mt-1" style={{ fontSize: '22px', color: 'black' }}>layers</span></div>
         <h1 className="font-bold text-lg">JobTracker</h1>
         <div className="absolute right-5 flex gap-1 cursor-pointer uppercase">
           <button

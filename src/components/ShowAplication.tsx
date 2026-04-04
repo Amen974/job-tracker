@@ -46,7 +46,7 @@ const ShowAplication = ({ selectedApplication, onClose }: { selectedApplication:
 
           <div className="flex flex-col gap-1">
             <label className="text-gray-400 text-xs uppercase">Job URL</label>
-            <div className="bg-main px-4 py-1.5 rounded-lg border border-[#20dfbf] min-h-10">{selectedApplication?.job_url}</div>
+            <a className="bg-main px-4 py-1.5 rounded-lg border border-[#20dfbf] min-h-10">{selectedApplication?.job_url}</a>
           </div>
           
           <div className="flex flex-col gap-1">

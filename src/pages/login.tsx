@@ -27,7 +27,7 @@ const Login = () => {
     <main className="h-screen w-full flex flex-col bg-main text-white overflow-hidden">
 
       <div className="flex items-center h-20 sm:h-15 p-5 gap-2 border-b border-gray-700">
-        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><img src="layers.svg" alt="layers" height={20} width={20} /></div>
+        <div className="bg-green h-10 w-8 flex items-center justify-center rounded-lg cursor-pointer"><span className="material-symbols-outlined text-black mt-1" style={{ fontSize: '22px',}}>layers</span></div>
         <h1 className="font-bold text-lg">JobTracker</h1>
       </div>
 
@@ -42,7 +42,7 @@ const Login = () => {
 
           {errorMsg &&(
             <div className="bg-[#4c0519] rounded-xl p-3 border border-[#881337] flex gap-1 justify-center">
-            <img src="error.svg" alt="error" /><p className="text-[#fb7185]">{errorMsg}</p>
+            <span className="material-symbols-outlined text-[#fb7185]  mt-1" style={{ fontSize: '20px',}}>error</span><p className="text-[#fb7185]">{errorMsg}</p>
           </div>
           )}
 
@@ -56,7 +56,7 @@ const Login = () => {
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="ml-1">Email Address</label>
               <div className={`flex items-center border  rounded-xl w-full h-11 p-3 gap-2 ${errorMsg ? ' border-[#fb7185]' : 'border-gray-700'}`}>
-                <img src="mail.svg" alt="mail" height={20} width={20} />
+                <span className="material-symbols-outlined mt-1 text-gray-400 mb-1" style={{ fontSize: '20px',}}>mail</span>
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -72,7 +72,7 @@ const Login = () => {
             <div className="flex flex-col gap-2 mb-3">
               <label htmlFor="password" className="ml-1">Password</label>
               <div className={`flex items-center border  rounded-xl w-full h-11 p-3 gap-2 ${errorMsg ? ' border-[#fb7185]' : 'border-gray-700'}`}>
-                <img src="lock.svg" alt="lock" height={20} width={20} />
+                <span className="material-symbols-outlined mt-1 text-gray-400 mb-1" style={{ fontSize: '20px',}}>lock</span>
                 <input
                   value={password}
                   onChange={(e) => setpassword(e.target.value)}
@@ -90,6 +90,7 @@ const Login = () => {
               : <button className="cursor-pointer font-bold text-black bg-green rounded-xl w-full h-12" type="submit">Register</button>
             }
             
+            <button className="cursor-pointer font-bold text-black bg-green rounded-xl w-full h-12" onClick={()=>{setEmail('demo@jobtracker.com'); setpassword('demo123456')}}>Demo account</button>
           </form>
 
             {isLogin 

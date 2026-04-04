@@ -41,11 +41,6 @@ const EditInterview = ({ onClose, selectedInterview }: { onClose: () => void, se
         </div>
 
         <div className="flex-1 px-8 py-6 overflow-y-auto space-y-8">
-          <div className="p-6 bg-[#20dfbf]/5 border border-[#20dfbf]/20 rounded-xl flex flex-col gap-5">
-            <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-[#20dfbf]" style={{ fontSize: '12px' }}>emergency</span>
-              <h3 className="text-sm font-bold text-[#20dfbf]">Interview Details</h3>
-            </div>
 
             <div className="flex flex-col gap-4">
               <label className="text-gray-400 text-xs uppercase">Interview Date</label>
@@ -90,7 +85,6 @@ const EditInterview = ({ onClose, selectedInterview }: { onClose: () => void, se
                 />
               </div>
             </div>
-          </div>
         </div>
 
         <div className="h-20 sm:h-15 w-full border-t border-gray-700 flex items-center justify-end pr-4 sm:pr-7 gap-5 sm:gap-7">

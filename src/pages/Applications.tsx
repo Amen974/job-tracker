@@ -52,9 +52,9 @@ const Applications = () => {
 
   const afterFilter = handelFilter()
 
-  const getInterview = (id:string, status:Status,): Interview | null => {
+  const getInterview = (id: string, status: Status,): Interview | null => {
     if (status !== 'Interview') return null
-    return interviews.find((i)=> i.application_id === id) ?? null;
+    return interviews.find((i) => i.application_id === id) ?? null;
   }
 
   return (
@@ -109,9 +109,17 @@ const Applications = () => {
             </div>
           ))}
         </div>
+
+
       </div>
 
-      <div onClick={()=>SetShowNewAplication(true)} className="bg-[#20dfbf] rounded-xl h-12 w-12 text-black fixed bottom-20 right-5 flex justify-center items-center cursor-pointer active:scale-95 hover:bg-[#1bf1cd]"><span className="material-symbols-outlined" style={{ fontSize: '25px' }}>add</span></div>
+      {afterFilter.length === 0 && (
+        <div className="w-full h-[40%] flex justify-center items-end ">
+          <h1 className="uppercase">no application found</h1>
+        </div>       
+      )}
+
+      <div onClick={() => SetShowNewAplication(true)} className="bg-[#20dfbf] rounded-xl h-12 w-12 text-black fixed bottom-20 right-5 flex justify-center items-center cursor-pointer active:scale-95 hover:bg-[#1bf1cd]"><span className="material-symbols-outlined" style={{ fontSize: '25px' }}>add</span></div>
 
     </main>
   )

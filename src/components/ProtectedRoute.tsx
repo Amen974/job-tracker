@@ -35,8 +35,8 @@ const ProtectedRoute = ({ children }: { children: ReactNode }): JSX.Element => {
       </div>
 
       <div className="w-full flex flex-col items-center gap-4">
-        <button className="cursor-pointer font-bold text-black bg-[#2c4a45] rounded-xl w-full sm:max-w-120 h-14 flex items-center gap-1 p-2"><img src="lock_green.svg" alt="lock_green" /><p className="text-sm text-gray-400">Encrypted connection active</p></button>
-        <button className="cursor-pointer font-bold text-black bg-[#2c4a45] rounded-xl w-full sm:max-w-120 h-14 flex items-center gap-1 p-2"><img src="cloud_sync.svg" alt="cloud_sync" /><p className="text-sm text-gray-400">Retrieving user credentials</p></button>
+        <button className="cursor-pointer font-bold text-black bg-[#2c4a45] rounded-xl w-full sm:max-w-120 h-14 flex items-center gap-1 p-2"><span className="material-symbols-outlined mt-1 text-green mb-1" style={{ fontSize: '20px',}}>lock</span><p className="text-sm text-gray-400">Encrypted connection active</p></button>
+        <button className="cursor-pointer font-bold text-black bg-[#2c4a45] rounded-xl w-full sm:max-w-120 h-14 flex items-center gap-1 p-2"><span className="material-symbols-outlined mt-1 text-green" style={{ fontSize: '20px',}}>cloud_sync</span><p className="text-sm text-gray-400">Retrieving user credentials</p></button>
       </div>
 
       <p className="text-gray-400 text-sm absolute bottom-10">Professional Grade Security</p>

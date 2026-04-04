@@ -47,7 +47,7 @@ const Interviews = () => {
 
   const handleDelete = async (id: string): Promise<void> => {
     const { error } = await supabase.from('applications').delete().eq('id', id);
-    if (error) console.error('Delete failed:', error);
+    if (error) console.log(error.message);
   }
 
   return (
@@ -127,8 +127,8 @@ const Interviews = () => {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  {upcoming.length === 0 ? 'NO INTERVIEW FOUND' : upcoming.map((i) => (
-                    <div key={i.id} onClick={() => { setShowInterview(true) }} className="bg-[#1ab59b]/10 w-full min-h-60 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer px-5 gap-3 shadow-2xl">
+                  {upcoming.length === 0 ? (<div className="w-full h-60 flex justify-center items-center"><p>NO UPCOMING INTERVIEW FOUND</p></div>) : upcoming.map((i) => (
+                    <div key={i.id} onClick={() => { setShowInterview(true); setSelectedInterview(i) }} className="bg-[#1ab59b]/10 w-full min-h-60 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer px-5 gap-3 shadow-2xl">
                       <div className="flex items-center flex-1">
                         <div className="flex-1 gap-2 flex items-center">
                           <span className="material-symbols-outlined text-[#7dd3fc]">apartment</span>
@@ -164,8 +164,8 @@ const Interviews = () => {
                   <h2 className="text-xl font-bold">Past Interviews</h2>
                 </div>
 
-                {past.length === 0 ? 'NO INTERVIEW FOUND' : past.map((i) => (
-                  <div key={i.id} onClick={() => { setShowInterview(true); }} className="bg-[#1ab59b]/10 w-full min-h-40 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer px-5 gap-3 shadow-2xl opacity-70">
+                {past.length === 0 ? (<div className="w-full h-60 flex justify-center items-center"><p>NO PAST INTERVIEW FOUND</p></div>) : past.map((i) => (
+                  <div key={i.id} onClick={() => { setShowInterview(true); setSelectedInterview(i) }} className="bg-[#1ab59b]/10 w-full min-h-40 rounded-2xl border border-[#20dfbf1a] flex flex-col cursor-pointer px-5 gap-3 shadow-2xl opacity-70">
                     <div className="flex items-center flex-1">
                       <div className="flex-1 gap-2 flex items-center">
                         <span className="material-symbols-outlined text-[#7dd3fc]">apartment</span>
@@ -185,7 +185,7 @@ const Interviews = () => {
                       </div>
                       <div className="flex gap-5">
                         <button onClick={(e) => { e.stopPropagation(); setShowEdit(true); setSelectedInterview(i) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px' }}>edit</span></button>
-                        <button onClick={(e) => { e.stopPropagation(); handleDelete(i.application_id) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white  " style={{ fontSize: '16px', marginTop: '3px' }}>delete</span></button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDelete(i.application_id) }} className="cursor-pointer"><span className="material-symbols-outlined hover:text-white" style={{ fontSize: '16px', marginTop: '3px' }}>delete</span></button>
                       </div>
                     </div>
                   </div>
