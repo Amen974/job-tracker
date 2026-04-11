@@ -41,7 +41,12 @@ const ShowInterview = ({ selectedInterview, onClose }: { selectedInterview: Inte
 
           <div className="flex flex-col gap-1">
             <label className="text-gray-400 text-xs uppercase">Job URL</label>
-            <a className="bg-main px-4 py-1.5 rounded-lg border border-[#20dfbf] min-h-10">{selectedInterview?.applications.job_url}</a>
+            <a target="_blank"
+              rel="noreferrer"
+              className="bg-main px-4 py-1.5 rounded-lg border border-[#20dfbf] min-h-10  overflow-x-auto whitespace-nowrap" style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}>{selectedInterview?.applications.job_url}</a>
           </div>
 
           <div className="flex flex-col gap-1">
